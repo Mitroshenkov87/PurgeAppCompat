@@ -1,31 +1,99 @@
-# PurgeAppCompat
+# 🧹 PurgeAppCompat
 
-A modern WinForms tool for aggressively disabling legacy Application Compatibility features on Windows 11.
+> Мощный инструмент для **жёсткой очистки** устаревших механизмов совместимости Windows 11.
 
-## Features
-- Level 1 (Nuclear): Hard purge of legacy compatibility (PCA service, policies, tasks, registry layers)
-- Level 2 (Recommended): Safe recommended cleanup
-- Level 3: Restore defaults
-- Creates System Restore point before destructive operations
-- Robust backup of important files before changes
-- Clean, resizable interface with proper HiDPI support
+[![.NET](https://img.shields.io/badge/.NET-10.0-blueviolet)](https://dotnet.microsoft.com/)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2011-blue)](https://www.microsoft.com/windows/windows-11)
 
-## Requirements
-- Windows 11 (recommended)
-- .NET 10 Desktop Runtime (or build from source)
-- Administrator privileges
+---
 
-## Building from source
+## ✨ Что делает программа
+
+PurgeAppCompat помогает полностью отключить **legacy Application Compatibility** в Windows 11 — функции, которые остались ещё со времён Windows Vista/7/8.
+
+### Доступные уровни очистки:
+
+| Уровень | Название                    | Что делает                                                                 | Уровень опасности |
+|---------|-----------------------------|----------------------------------------------------------------------------|-------------------|
+| **1**   | 🔥 Nuclear Purge            | Максимально агрессивная очистка (рекомендуется)                            | 🔴 Высокий        |
+| **2**   | 🛡️ Safe Recommended Purge   | Безопасная и рекомендуемая очистка                                         | 🟢 Низкий         |
+| **3**   | ↩️ Restore Defaults         | Возврат всех настроек к состоянию по умолчанию                             | 🟡 Средний        |
+
+---
+
+## 🚀 Возможности
+
+- ✅ Создание **System Restore Point** перед опасными операциями
+- ✅ Резервное копирование важных файлов перед изменениями
+- ✅ Отключение службы **Program Compatibility Assistant**
+- ✅ Применение агрессивных политик совместимости
+- ✅ Отключение задач **Application Experience**
+- ✅ Полная очистка **Compatibility Layers** в реестре
+- ✅ Красивый и удобный интерфейс с поддержкой HiDPI
+- ✅ Подробное логирование всех действий
+
+---
+
+## ⚠️ Важные предупреждения
+
+> **Level 1 (Nuclear Purge)** — это очень агрессивная операция.  
+> После её выполнения некоторые очень старые программы могут перестать работать.
+
+**Обязательно:**
+- Сделайте резервную копию важных данных
+- Перезагрузите компьютер после выполнения Level 1 или 2
+
+---
+
+## 📥 Установка и запуск
+
+### Вариант 1: Скачать готовую сборку (рекомендуется)
+
+1. Перейдите в раздел **[Releases](https://github.com/Mitroshenkov87/PurgeAppCompat/releases)**
+2. Скачайте последний `PurgeAppCompat-vX.X.zip`
+3. Распакуйте архив
+4. Запустите `PurgeAppCompat.exe` **от имени администратора**
+
+### Вариант 2: Сборка из исходников
+
 ```bash
+git clone https://github.com/Mitroshenkov87/PurgeAppCompat.git
+cd PurgeAppCompat
 dotnet build -c Release
 ```
 
-The compiled executable will be in `bin\Release\net10.0-windows\`.
+Собранный файл будет находиться в:
+```
+bin\Release\net10.0-windows\PurgeAppCompat.exe
+```
 
-## Usage
-Run `PurgeAppCompat.exe` as Administrator.
+---
 
-**Warning**: Level 1 makes permanent changes. Always review the log and consider creating a System Restore point manually if the automatic one fails.
+## 🖥️ Скриншоты
 
-## License
-MIT (or whatever you choose)
+> (Здесь позже можно будет добавить скриншоты интерфейса)
+
+---
+
+## 🛠️ Технологии
+
+- **.NET 10** + Windows Forms
+- Чистая архитектура (разделение на сервисы: Logger, StatusChecker, PurgeEngine и др.)
+- Поддержка **PerMonitorV2** DPI
+- Резиновый интерфейс
+
+---
+
+## 📄 Лицензия
+
+Этот проект распространяется под лицензией **MIT**.
+
+---
+
+## 🤝 Вклад
+
+Если у тебя есть идеи по улучшению или ты нашёл баг — welcome в Issues и Pull Requests!
+
+---
+
+**PurgeAppCompat** — для тех, кто хочет действительно чистую Windows 11 без балласта прошлого. 🔥
