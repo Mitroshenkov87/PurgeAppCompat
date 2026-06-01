@@ -1,60 +1,59 @@
 # 🧹 PurgeAppCompat
 
-> Мощный инструмент для **жёсткой очистки** устаревших механизмов совместимости Windows 11.
+> A powerful Windows 11 tool to **aggressively disable** legacy Application Compatibility features.
 
 [![.NET](https://img.shields.io/badge/.NET-10.0-blueviolet)](https://dotnet.microsoft.com/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2011-blue)](https://www.microsoft.com/windows/windows-11)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ---
 
-## ✨ Что делает программа
+## ✨ What It Does
 
-PurgeAppCompat помогает полностью отключить **legacy Application Compatibility** в Windows 11 — функции, которые остались ещё со времён Windows Vista/7/8.
+PurgeAppCompat helps you completely remove **legacy Application Compatibility** mechanisms from Windows 11 — features that have remained since the Windows Vista/7/8 era.
 
-### Доступные уровни очистки:
+### Available Purge Levels
 
-| Уровень | Название                    | Что делает                                                                 | Уровень опасности |
-|---------|-----------------------------|----------------------------------------------------------------------------|-------------------|
-| **1**   | 🔥 Nuclear Purge            | Максимально агрессивная очистка (рекомендуется)                            | 🔴 Высокий        |
-| **2**   | 🛡️ Safe Recommended Purge   | Безопасная и рекомендуемая очистка                                         | 🟢 Низкий         |
-| **3**   | ↩️ Restore Defaults         | Возврат всех настроек к состоянию по умолчанию                             | 🟡 Средний        |
-
----
-
-## 🚀 Возможности
-
-- ✅ Создание **System Restore Point** перед опасными операциями
-- ✅ Резервное копирование важных файлов перед изменениями
-- ✅ Отключение службы **Program Compatibility Assistant**
-- ✅ Применение агрессивных политик совместимости
-- ✅ Отключение задач **Application Experience**
-- ✅ Полная очистка **Compatibility Layers** в реестре
-- ✅ Красивый и удобный интерфейс с поддержкой HiDPI
-- ✅ Подробное логирование всех действий
+| Level | Name                        | Description                                              | Risk Level |
+|-------|-----------------------------|----------------------------------------------------------|------------|
+| **1** | 🔥 Nuclear Purge            | Maximum aggressive cleanup (recommended for power users) | 🔴 High    |
+| **2** | 🛡️ Safe Recommended Purge   | Recommended safe option for most users                   | 🟢 Low     |
+| **3** | ↩️ Restore Defaults         | Revert all changes made by the tool                      | 🟡 Medium  |
 
 ---
 
-## ⚠️ Важные предупреждения
+## 🚀 Features
 
-> **Level 1 (Nuclear Purge)** — это очень агрессивная операция.  
-> После её выполнения некоторые очень старые программы могут перестать работать.
-
-**Обязательно:**
-- Сделайте резервную копию важных данных
-- Перезагрузите компьютер после выполнения Level 1 или 2
+- ✅ Creates **System Restore Point** before dangerous operations
+- ✅ Robust backup system before making changes
+- ✅ Disables **Program Compatibility Assistant** service
+- ✅ Applies aggressive compatibility policies
+- ✅ Disables **Application Experience** scheduled tasks
+- ✅ Completely clears **Compatibility Layers** from registry
+- ✅ Clean, resizable interface with proper HiDPI support
+- ✅ Detailed logging of all operations
 
 ---
 
-## 📥 Установка и запуск
+## ⚠️ Important Warning
 
-### Вариант 1: Скачать готовую сборку (рекомендуется)
+> **Level 1 (Nuclear Purge)** is a very aggressive operation.  
+> After running it, some very old legacy applications may stop working correctly.
 
-1. Перейдите в раздел **[Releases](https://github.com/Mitroshenkov87/PurgeAppCompat/releases)**
-2. Скачайте последний `PurgeAppCompat-vX.X.zip`
-3. Распакуйте архив
-4. Запустите `PurgeAppCompat.exe` **от имени администратора**
+**Always** back up important data before using Level 1.
 
-### Вариант 2: Сборка из исходников
+---
+
+## 📥 Installation & Usage
+
+### Option 1: Download Release (Recommended)
+
+1. Go to **[Releases](https://github.com/Mitroshenkov87/PurgeAppCompat/releases)**
+2. Download the latest `PurgeAppCompat-vX.X.zip`
+3. Extract the archive
+4. Run `PurgeAppCompat.exe` **as Administrator**
+
+### Option 2: Build from Source
 
 ```bash
 git clone https://github.com/Mitroshenkov87/PurgeAppCompat.git
@@ -62,38 +61,35 @@ cd PurgeAppCompat
 dotnet build -c Release
 ```
 
-Собранный файл будет находиться в:
+The executable will be located at:
 ```
 bin\Release\net10.0-windows\PurgeAppCompat.exe
 ```
 
 ---
 
-## 🖥️ Скриншоты
+## 🛡️ Safety Features
 
-> (Здесь позже можно будет добавить скриншоты интерфейса)
-
----
-
-## 🛠️ Технологии
-
-- **.NET 10** + Windows Forms
-- Чистая архитектура (разделение на сервисы: Logger, StatusChecker, PurgeEngine и др.)
-- Поддержка **PerMonitorV2** DPI
-- Резиновый интерфейс
+- Automatic System Restore Point creation before Level 1
+- Multi-stage confirmation for dangerous operations
+- Detailed logging of every action
+- Clean, modern architecture for reliability
 
 ---
 
-## 📄 Лицензия
+## 🛠️ Technical Details
 
-Этот проект распространяется под лицензией **MIT**.
-
----
-
-## 🤝 Вклад
-
-Если у тебя есть идеи по улучшению или ты нашёл баг — welcome в Issues и Pull Requests!
+- Built with **.NET 10** + Windows Forms
+- Clean architecture (Logger, StatusChecker, PurgeEngine, BackupManager, etc.)
+- `PerMonitorV2` HiDPI support
+- Resizable and responsive interface
 
 ---
 
-**PurgeAppCompat** — для тех, кто хочет действительно чистую Windows 11 без балласта прошлого. 🔥
+## 📄 License
+
+MIT License
+
+---
+
+**PurgeAppCompat** — For those who want a truly clean Windows 11 without legacy ballast. 🔥
