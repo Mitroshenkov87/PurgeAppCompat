@@ -8,10 +8,10 @@
 
     Three levels of cleanup are available:
 
-        Level 1 — Nuclear / Complete Purge (Exorcism)
+        Level 1 — Complete Purge
             Disables PCA service and GPO, disables Application Experience scheduled tasks,
-            clears compatibility Layers in registry, and renames sysmain.sdb (the main shim database).
-            WARNING: This is destructive. Some legacy installers and older applications may behave unexpectedly.
+            and clears compatibility Layers in registry.
+            This is the recommended "nuclear" option for most power users.
 
         Level 2 — Safe Recommended Purge (default)
             Performs all non-destructive actions (recommended for most users).
@@ -23,15 +23,16 @@
     - Always create a System Restore point before running Level 1.
     - Level 1 requires explicit confirmation unless -Force is used.
     - This script requires Windows 11 and administrative privileges.
+    - We intentionally do NOT touch sysmain.sdb (it is protected by TrustedInstaller/SFC and often gets restored anyway).
 
 .PARAMETER Level
     Specifies the purge level:
-        1 = Complete (nuclear) purge including sysmain.sdb removal
+        1 = Complete purge (PCA + tasks + registry layers)
         2 = Safe purge (recommended)
         3 = Restore defaults
 
 .PARAMETER Force
-    Skips interactive confirmation prompts (use with caution, especially on Level 1).
+    Skips interactive confirmation prompts (use with caution on Level 1).
 
 .PARAMETER NoRestorePoint
     Skips creation of a System Restore point.
@@ -46,16 +47,16 @@
 
 .EXAMPLE
     .\PurgeAppCompat.ps1 -Level 1 -Force
-    Performs full nuclear purge without additional prompts (dangerous).
+    Performs full purge without additional prompts.
 
 .NOTES
     Author:        Grok + Aleksandr Mitroshenkov
-    Version:       2.1 (Purge Edition)
+    Version:       2.2 (Purge Edition)
     Requires:      PowerShell 5.1+ or PowerShell 7+
     Platform:      Windows 11 (best results)
     GitHub:        https://github.com/Mitroshenkov87/PurgeAppCompat
 
-    Use at your own risk. Level 1 is irreversible without a backup of sysmain.sdb.
+    Use at your own risk.
 #>
 
 #Requires -Version 5.1
@@ -71,13 +72,12 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$Host.UI.RawUI.WindowTitle = "PurgeAppCompat v2.1"
+$Host.UI.RawUI.WindowTitle = "PurgeAppCompat v2.2"
 
 # ==================== CONSTANTS ====================
 $ScriptRoot   = Split-Path -Parent $MyInvocation.MyCommand.Path
 $LogPath      = Join-Path $ScriptRoot "PurgeAppCompat_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 $BackupRoot   = "C:\AppCompatBackups"
-$SysmainPath  = Join-Path $env:SystemRoot "AppPatch\sysmain.sdb"
 
 # ==================== BANNER ====================
 function Show-Banner {
@@ -159,22 +159,6 @@ function New-SafetyNets {
     Write-Log "Registry backup saved to: $regFile" "Green"
 }
 
-function Backup-SysmainSdb {
-    if (-not (Test-Path $SysmainPath)) {
-        Write-Log "sysmain.sdb does not exist. Nothing to back up." "Green"
-        return $true
-    }
-
-    $backupDir = Join-Path $BackupRoot "sysmain_$(Get-Date -Format 'yyyyMMdd_HHmmss')"
-    New-Item -ItemType Directory -Path $backupDir -Force | Out-Null
-    $backupFile = Join-Path $backupDir "sysmain.sdb.bak"
-
-    Write-Log "Creating backup of sysmain.sdb..." "Yellow"
-    Copy-Item -Path $SysmainPath -Destination $backupFile -Force
-    Write-Log "Backup created: $backupFile" "Green"
-    return $true
-}
-
 # ==================== CORE FUNCTIONS ====================
 function Disable-ProgramCompatibilityAssistant {
     Write-Log "=== Disabling Program Compatibility Assistant (PCA) ===" "Magenta"
@@ -253,39 +237,6 @@ function Clear-CompatibilityLayersRegistry {
     }
 }
 
-function Remove-SysmainSdb {
-    Write-Log "=== FINAL STEP: Removing/renaming sysmain.sdb ===" "Red"
-
-    if (-not (Test-Path $SysmainPath)) {
-        Write-Log "sysmain.sdb already does not exist." "Green"
-        return
-    }
-
-    if (-not $Force) {
-        Write-Host ""
-        Write-Host "!!! WARNING: DESTRUCTIVE ACTION !!!" -ForegroundColor Red -BackgroundColor Black
-        Write-Host "sysmain.sdb is Microsoft's main Application Compatibility Shim Database." -ForegroundColor Yellow
-        Write-Host "Renaming it may cause certain legacy installers and applications to behave unexpectedly." -ForegroundColor Yellow
-        Write-Host ""
-        $answer = Read-Host "Type exactly 'YES I UNDERSTAND' to continue"
-        if ($answer -ne "YES I UNDERSTAND") {
-            Write-Log "Operation cancelled by user." "Green"
-            return
-        }
-    }
-
-    Backup-SysmainSdb
-
-    try {
-        Rename-Item -Path $SysmainPath -NewName "sysmain.sdb.DEAD" -Force -WhatIf:$WhatIfPreference
-        Write-Log "sysmain.sdb successfully renamed to sysmain.sdb.DEAD" "Red"
-        Write-Log "Legacy compatibility has been permanently disabled." "DarkRed"
-    }
-    catch {
-        Write-Log "Failed to rename sysmain.sdb. Try running as TrustedInstaller or do it manually." "Red"
-    }
-}
-
 # ==================== RESTORE (Level 3) ====================
 function Restore-DefaultSettings {
     Write-Log "=== RESTORING DEFAULT WINDOWS SETTINGS ===" "Cyan"
@@ -319,7 +270,7 @@ function Restore-DefaultSettings {
     }
 
     Write-Host ""
-    Write-Host "Note: If you renamed sysmain.sdb, restore it manually from the backup in $BackupRoot" -ForegroundColor Yellow
+    Write-Host "Note: A reboot is recommended to fully restore compatibility state." -ForegroundColor Yellow
 }
 
 # ==================== INTERACTIVE MENU ====================
@@ -327,8 +278,8 @@ function Select-PurgeLevel {
     $options = @(
         @{
             Level = 1
-            Title = "LEVEL 1 — COMPLETE PURGE (Nuclear / Exorcism)"
-            Desc  = "Full cleanup including renaming of sysmain.sdb. For advanced users who want maximum cleanliness."
+            Title = "LEVEL 1 — COMPLETE PURGE"
+            Desc  = "Disables PCA service + GPO, scheduled tasks and clears all compatibility layers in registry."
             Danger = $true
         },
         @{
@@ -418,13 +369,12 @@ function Invoke-PurgeAppCompat {
 
     switch ($Level) {
         1 {
-            Write-Log "LEVEL 1 — COMPLETE PURGE (Nuclear) selected." "Red"
+            Write-Log "LEVEL 1 — COMPLETE PURGE selected." "Red"
             New-SafetyNets
             Disable-ProgramCompatibilityAssistant
             Disable-AppExperienceScheduledTasks
             Clear-CompatibilityLayersRegistry
-            Remove-SysmainSdb
-            Write-Log "Level 1 completed. Legacy compatibility has been aggressively removed." "DarkRed"
+            Write-Log "Level 1 completed successfully." "DarkRed"
         }
         2 {
             Write-Log "LEVEL 2 — Safe recommended purge." "Green"
